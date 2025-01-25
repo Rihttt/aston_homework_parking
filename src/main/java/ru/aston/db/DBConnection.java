@@ -31,7 +31,7 @@ public class DBConnection {
         String password = properties.getProperty("db.password");
         String driverClassName = properties.getProperty("db.driver-class-name");
         try {
-            Class.forName(driverClassName); // Это загрузит и зарегистрирует драйвер
+            Class.forName(driverClassName);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Driver not found: " + driverClassName, e);
         }
