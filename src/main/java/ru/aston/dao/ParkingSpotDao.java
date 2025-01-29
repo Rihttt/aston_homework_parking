@@ -66,7 +66,7 @@ public class ParkingSpotDao implements SimpleDao<ParkingSpot> {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Exception on findById. " + e.getMessage());
+            System.out.println("Exception on findById: " + e.getMessage());
         }
 
         return Optional.empty();
