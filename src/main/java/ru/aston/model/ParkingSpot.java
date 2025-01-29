@@ -1,6 +1,6 @@
 package ru.aston.model;
 
-public class ParkingSpot {
+public class ParkingSpot implements ParkingObject{
     private int id;
     private int spotNumber;
     private boolean isAvailable;

@@ -1,8 +1,10 @@
 package ru.aston;
 
 import ru.aston.dao.ParkingSpotDao;
+import ru.aston.dao.SimpleDao;
 import ru.aston.db.DatabaseInitializer;
 import ru.aston.db.H2DatabaseInitializer;
+import ru.aston.model.ParkingObject;
 import ru.aston.model.ParkingSpot;
 
 import java.util.List;
@@ -28,13 +30,13 @@ public class ParkingApp
             choice = scanner.nextInt();
             switch (choice) {
                 case 1:
-                    listParkingSpots(parkingSpotDao);
+                    listRecords(parkingSpotDao, ParkingSpot.class);
                     break;
                 case 2:
                     addNewParkingSpot(parkingSpotDao);
                     break;
                 case 3:
-                    findByIdParkingSpot(parkingSpotDao);
+                    findRecordById(parkingSpotDao, ParkingSpot.class);
                     break;
                 case 0:
                     System.out.println("Exiting...");
@@ -54,15 +56,6 @@ public class ParkingApp
         System.out.println("==========================");
     }
 
-    private static void listParkingSpots(ParkingSpotDao dao) {
-        List<ParkingSpot> parkingSpots = dao.findAll();
-        if (parkingSpots.isEmpty()) {
-            System.out.println("No parking spots found.");
-        } else {
-            parkingSpots.stream().map(ParkingSpot::toString).forEach(System.out::println);
-        }
-    }
-
     private static void addNewParkingSpot(ParkingSpotDao dao) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter spot number: ");
@@ -76,14 +69,23 @@ public class ParkingApp
         System.out.println("Parking spot added successfully!");
     }
 
-    private static void findByIdParkingSpot(ParkingSpotDao dao) {
+    private static <T extends ParkingObject> void listRecords(SimpleDao<T> dao, Class<T> cls) {
+        List<T> records = dao.findAll();
+        if (records.isEmpty()) {
+            System.out.println("No " + cls.getName() + "s found.");
+        } else {
+            records.stream().map(T::toString).forEach(System.out::println);
+        }
+    }
+
+    private static <T> void findRecordById(SimpleDao<T> dao, Class<T> cls) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter parking spot id: ");
-        int spotId = scanner.nextInt();
-        Optional<ParkingSpot> optSpot = dao.findById(spotId);
+        int recordId = scanner.nextInt();
+        Optional<T> optRecord = dao.findById(recordId);
 
-        optSpot.ifPresentOrElse(
-                spot -> System.out.println(spot.toString()),
+        optRecord.ifPresentOrElse(
+                item -> System.out.println(item.toString()),
                 () -> System.out.println("No parking spots found.")
         );
     }
