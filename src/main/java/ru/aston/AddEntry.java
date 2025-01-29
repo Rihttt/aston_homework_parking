@@ -9,8 +9,8 @@ import java.util.Scanner;
 
 public class AddEntry {
 
-    public AddEntry() throws SQLException {
-        Connection connection = DBConnection.getInstance().getConnection();
+    public AddEntry(Connection connection) throws SQLException {
+
         while(true)  {
             System.out.println("Выберите таблицу: \n" +
                     "1. Пользователи\n" +
@@ -114,7 +114,6 @@ public class AddEntry {
                 }
 
                 case 4:{
-
                     System.out.println("Введите номерной знак: \n" );
                     String plate = scanner.next();
                     System.out.println("Введите модель машины: \n" );

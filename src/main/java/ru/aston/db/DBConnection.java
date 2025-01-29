@@ -38,7 +38,6 @@ public class DBConnection {
         if (connection == null || connection.isClosed()) {
             connection = DriverManager.getConnection(url, username, password);
         }
-        System.out.println("Connected to H2 database");
         return connection;
     }
 }

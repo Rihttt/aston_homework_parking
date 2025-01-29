@@ -1,4 +1,4 @@
-package ru.aston.classes;
+package ru.aston.entity;
 
 public class Vehicle {
     private int id;

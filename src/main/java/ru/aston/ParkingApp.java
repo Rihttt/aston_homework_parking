@@ -1,10 +1,11 @@
 package ru.aston;
 
-
 import org.h2.tools.Server;
+import ru.aston.db.DBConnection;
 import ru.aston.db.H2DBInitializer;
 
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import java.util.Scanner;
@@ -12,10 +13,14 @@ import java.util.Scanner;
 public class ParkingApp {
 
     public static void main (String[] args) throws SQLException {
+
         H2DBInitializer initializer = new H2DBInitializer();
         initializer.initialize();
+        Connection connection = DBConnection.getInstance().getConnection();
+
         Server h2WebServer = org.h2.tools.Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082");
         h2WebServer.start();
+
         while(true){
 
             System.out.println("Выберите действие: \n"+
@@ -30,24 +35,24 @@ public class ParkingApp {
 
             switch (k){
                 case 1:{
-                    new AddEntry();
+                    new AddEntry(connection);
                     break;
                 }
                 case 2:{
-                    new DeleteEntry();
+                    new DeleteEntry(connection);
                 }
                 case 3:{
-
+                    new UpdateEntry(connection);
                     break;
                 }
 
                 case 4:{
-                    new PrintTable();
+                    new PrintTable(connection);
                     break;
                 }
 
                 case 5:{
-                    new QueryExecution();
+                    new QueryExecution(connection);
                     break;
                 }
                 case 6:

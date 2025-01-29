@@ -23,6 +23,7 @@ public class H2DBInitializer implements DBInitializer {
             executeSql(sqlCommands);
         } catch (Exception e) {
             System.out.println("Error initializing the database" + e.getMessage());
+
         }
     }
     private void executeSql(String sql) throws SQLException {
