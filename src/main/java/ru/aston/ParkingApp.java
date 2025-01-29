@@ -1,0 +1,56 @@
+package ru.aston;
+
+
+import org.h2.tools.Server;
+import ru.aston.db.H2DBInitializer;
+
+
+import java.sql.SQLException;
+
+import java.util.Scanner;
+
+public class ParkingApp {
+
+    public static void main (String[] args) throws SQLException {
+        H2DBInitializer initializer = new H2DBInitializer();
+        initializer.initialize();
+        Server h2WebServer = org.h2.tools.Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082");
+        h2WebServer.start();
+        while(true){
+
+            System.out.println("Выберите действие: \n"+
+                    "1. Добавить запись\n"+
+                    "2. Удалить запись\n"+
+                    "3. Вывести таблицу\n"+
+                    "4. Запросы\n"+
+                    "5. Выход\n");
+            Scanner scanner = new Scanner(System.in);
+            int k = scanner.nextInt();
+
+            switch (k){
+                case 1:{
+                    new AddEntry();
+                    break;
+                }
+                case 2:{
+                    new DeleteEntry();
+                }
+
+                case 3:{
+                    new PrintTable();
+                    break;
+                }
+
+                case 4:{
+                    new QueryExecution();
+                    break;
+                }
+                case 5:
+                    h2WebServer.stop();
+                    return;
+            }
+        }
+
+
+    }
+}
