@@ -21,9 +21,10 @@ public class ParkingApp {
             System.out.println("Выберите действие: \n"+
                     "1. Добавить запись\n"+
                     "2. Удалить запись\n"+
-                    "3. Вывести таблицу\n"+
-                    "4. Запросы\n"+
-                    "5. Выход\n");
+                    "3. Обновить запись\n"+
+                    "4. Вывести таблицу\n"+
+                    "5. Запросы\n"+
+                    "6. Выход\n");
             Scanner scanner = new Scanner(System.in);
             int k = scanner.nextInt();
 
@@ -35,17 +36,21 @@ public class ParkingApp {
                 case 2:{
                     new DeleteEntry();
                 }
-
                 case 3:{
-                    new PrintTable();
+
                     break;
                 }
 
                 case 4:{
+                    new PrintTable();
+                    break;
+                }
+
+                case 5:{
                     new QueryExecution();
                     break;
                 }
-                case 5:
+                case 6:
                     h2WebServer.stop();
                     return;
             }
