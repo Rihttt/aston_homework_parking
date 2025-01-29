@@ -38,6 +38,9 @@ public class ParkingApp
                 case 3:
                     findRecordById(parkingSpotDao, ParkingSpot.class);
                     break;
+                case 4:
+                    deleteRecordById(parkingSpotDao, ParkingSpot.class);
+                    break;
                 case 0:
                     System.out.println("Exiting...");
                     break;
@@ -52,6 +55,7 @@ public class ParkingApp
         System.out.println("1. List all parking spots");
         System.out.println("2. Add a new parking spot");
         System.out.println("3. Find parking spot by Id");
+        System.out.println("4. Delete parking spot by Id");
         System.out.println("0. Exit");
         System.out.println("==========================");
     }
@@ -72,7 +76,7 @@ public class ParkingApp
     private static <T extends ParkingObject> void listRecords(SimpleDao<T> dao, Class<T> cls) {
         List<T> records = dao.findAll();
         if (records.isEmpty()) {
-            System.out.println("No " + cls.getName() + "s found.");
+            System.out.println("No " + cls.getSimpleName() + "s found.");
         } else {
             records.stream().map(T::toString).forEach(System.out::println);
         }
@@ -80,7 +84,7 @@ public class ParkingApp
 
     private static <T> void findRecordById(SimpleDao<T> dao, Class<T> cls) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter parking spot id: ");
+        System.out.print("Enter " + cls.getSimpleName() + " id: ");
         int recordId = scanner.nextInt();
         Optional<T> optRecord = dao.findById(recordId);
 
@@ -88,5 +92,12 @@ public class ParkingApp
                 item -> System.out.println(item.toString()),
                 () -> System.out.println("No parking spots found.")
         );
+    }
+
+    private static <T> void deleteRecordById(SimpleDao<T> dao, Class<T> cls) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter " + cls.getSimpleName() + " id: ");
+        int recordId = scanner.nextInt();
+        dao.deleteById(recordId);
     }
 }

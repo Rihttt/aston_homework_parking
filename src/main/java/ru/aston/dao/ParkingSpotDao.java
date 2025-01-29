@@ -27,7 +27,7 @@ public class ParkingSpotDao implements SimpleDao<ParkingSpot> {
             ps.setBoolean(2, record.isAvailable());
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Failed to insert ParkingSpot record: " + e.getMessage());
         }
     }
 
@@ -45,7 +45,7 @@ public class ParkingSpotDao implements SimpleDao<ParkingSpot> {
                 parkingSpots.add(parkingSpot);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            System.out.println("Failed to query ParkingSpot records: " + e.getMessage());
         }
         return parkingSpots;
     }
@@ -66,9 +66,20 @@ public class ParkingSpotDao implements SimpleDao<ParkingSpot> {
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Exception on findById: " + e.getMessage());
+            System.out.println("Failed to query ParkingSpot by Id: " + e.getMessage());
         }
 
         return Optional.empty();
+    }
+
+    @Override
+    public void deleteById(int id) {
+        String query = "DELETE FROM parking_spots WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Failed to delete parking_spot by ID: " + id +" " + e.getMessage());
+        }
     }
 }

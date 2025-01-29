@@ -7,4 +7,5 @@ public interface SimpleDao<T> {
     void save(T record);
     List<T> findAll();
     Optional<T> findById(int id);
+    void deleteById(int id);
 }
