@@ -16,8 +16,8 @@ public class ParkingApp {
 
         H2DBInitializer initializer = new H2DBInitializer();
         initializer.initialize();
-        Connection connection = DBConnection.getInstance().getConnection();
 
+        //для мониторинга бд в реальном времени
         Server h2WebServer = org.h2.tools.Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082");
         h2WebServer.start();
 
@@ -35,24 +35,26 @@ public class ParkingApp {
 
             switch (k){
                 case 1:{
-                    new AddEntry(connection);
+                    new AddEntry();
                     break;
                 }
+
                 case 2:{
-                    new DeleteEntry(connection);
+                    new DeleteEntry();
                 }
+
                 case 3:{
-                    new UpdateEntry(connection);
+                    new UpdateEntry();
                     break;
                 }
 
                 case 4:{
-                    new PrintTable(connection);
+                    new PrintTable();
                     break;
                 }
 
                 case 5:{
-                    new QueryExecution(connection);
+                    new QueryExecution();
                     break;
                 }
                 case 6:

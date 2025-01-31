@@ -5,7 +5,7 @@ import java.sql.SQLException;
 
 public class QueryExecution {
 
-    public QueryExecution(Connection connection) throws SQLException {
+    public QueryExecution() throws SQLException {
 
     }
 }
