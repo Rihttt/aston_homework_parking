@@ -4,14 +4,6 @@ public class Vehicle implements ParkingObject {
     private int id;
     private String plate, model, release_year;
 
-    public Vehicle() {
-        this.id = id;
-        this.plate = plate;
-        this.model = model;
-        this.release_year = release_year;
-    }
-
-
     public void setId(int id){this.id = id;}
     public int getId() {return id;}
 

@@ -10,6 +10,6 @@ public interface SimpleDao<T> {
     List<T> findAll();
     Optional<T> findById(int id);
     void deleteById(int id);
-    void update(T record, int id);
+    //void update(T record, int id);
 
 }

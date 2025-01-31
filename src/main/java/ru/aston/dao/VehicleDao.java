@@ -35,6 +35,7 @@ public class VehicleDao implements SimpleDao<Vehicle> {
         }
     }
 
+    /*
     @Override
     public void update(Vehicle rec, int id) {
         String sql = "UPDATE vehicle Set plate = ?, model = ?, release_year = ? WHERE id = ?";
@@ -49,10 +50,11 @@ public class VehicleDao implements SimpleDao<Vehicle> {
             e.printStackTrace();
         }
     }
+    */
 
     @Override
     public void deleteById(int id) {
-        String deleteByIdSql = "DELETE * FROM vehicle WHERE id = ?";
+        String deleteByIdSql = "DELETE FROM vehicle WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(deleteByIdSql)){
             ps.setInt(1, id);
             ps.executeUpdate();
