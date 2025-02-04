@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-public class H2DatabaseInitializer implements DatabaseInitializer{
+public class H2DBInitializer implements DBInitializer {
 
     public void initialize() {
         try (InputStream in = this.getClass().getClassLoader().getResourceAsStream("init_db.sql");
@@ -23,6 +23,7 @@ public class H2DatabaseInitializer implements DatabaseInitializer{
             executeSql(sqlCommands);
         } catch (Exception e) {
             System.out.println("Error initializing the database" + e.getMessage());
+
         }
     }
     private void executeSql(String sql) throws SQLException {

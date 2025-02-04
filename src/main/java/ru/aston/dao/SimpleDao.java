@@ -9,3 +9,4 @@ public interface SimpleDao<T> {
     Optional<T> findById(int id);
     void deleteById(int id);
 }
+

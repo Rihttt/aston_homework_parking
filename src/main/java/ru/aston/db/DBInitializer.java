@@ -1,5 +1,5 @@
 package ru.aston.db;
 
-public interface DatabaseInitializer {
+public interface DBInitializer {
     void initialize();
 }
