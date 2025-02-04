@@ -19,10 +19,9 @@ public class ParkingApp {
 
         H2DBInitializer initializer = new H2DBInitializer();
         initializer.initialize();
-        VehicleDao vehicleDao = new VehicleDao();
-        //ParkingTicketDao parkingTicketDao = new ParkingTicketDao и т.д.
 
-        //для мониторинга бд в реальном времени
+        VehicleDao vehicleDao = new VehicleDao();
+
         Server h2WebServer = org.h2.tools.Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082");
         h2WebServer.start();
 
@@ -39,22 +38,22 @@ public class ParkingApp {
 
             switch (k){
                 case 1:{
-                    //displaySubMenu(userDao, k);
+
                     break;
                 }
 
                 case 2:{
-                    //displaySubMenu(parkingTicketsDao, k);
+
                     break;
                 }
 
                 case 3:{
-                    //displaySubMenu(parkingSpotsDao, k);
+
                     break;
                 }
 
                 case 4:{
-                    displaySubMenu(vehicleDao, k);
+                    displaySubMenu(vehicleDao);
                     break;
                 }
 
@@ -67,7 +66,7 @@ public class ParkingApp {
         }
     }
 
-    public static <T extends ParkingObject> void displaySubMenu(SimpleDao<T> dao, int chosenKey) {
+    public static <T extends ParkingObject> void displaySubMenu(SimpleDao<T> dao) {
         while(true)  {
             System.out.println("\nВыберите действие: \n" +
                     "1. Добавить запись\n" +
@@ -81,12 +80,7 @@ public class ParkingApp {
             switch (j){
 
                 case 1:{
-                    switch (chosenKey){
-                        case 1:{break;}
-                        case 2:{break;}
-                        case 3:{break;}
-                        case 4:{addNewVehicle((VehicleDao) dao);break;}
-                    }
+                    addRecord(dao);
                     break;
                 }
 
@@ -113,6 +107,17 @@ public class ParkingApp {
         }
     }
 
+    private static <T extends ParkingObject> void addRecord(SimpleDao<T> dao){
+        String daoName = dao.getClass().getSimpleName();
+
+        switch (daoName){
+            case "1":{break;}
+            case "2":{break;}
+            case "3":{break;}
+            case "VehicleDao":{addNewVehicle((VehicleDao) dao);break;}
+        }
+    }
+
     private static void addNewVehicle(VehicleDao dao) {
         Scanner scanner = new Scanner(System.in);
         System.out.println("Введите номерной знак: \n" );
@@ -134,7 +139,7 @@ public class ParkingApp {
     private static <T extends ParkingObject> void listRecords(SimpleDao<T> dao) {
         List<T> records = dao.findAll();
         if (records.isEmpty()) {
-            System.out.println("No entry found.");
+            System.out.println("No record found.");
         } else {
             records.stream().map(T::toString).forEach(System.out::println);
         }
@@ -148,7 +153,7 @@ public class ParkingApp {
 
         optRecord.ifPresentOrElse(
                 item -> System.out.println(item.toString()),
-                () -> System.out.println("No entry found.")
+                () -> System.out.println("No record found.")
         );
     }
 

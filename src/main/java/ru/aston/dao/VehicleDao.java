@@ -35,23 +35,6 @@ public class VehicleDao implements SimpleDao<Vehicle> {
         }
     }
 
-    /*
-    @Override
-    public void update(Vehicle rec, int id) {
-        String sql = "UPDATE vehicle Set plate = ?, model = ?, release_year = ? WHERE id = ?";
-
-        try(PreparedStatement ps = connection.prepareStatement(sql)){
-            ps.setInt(4, id);
-            ps.setString(1, rec.getPlate());
-            ps.setString(2, rec.getModel());
-            ps.setString(3, rec.getRelease_year());
-            ps.executeUpdate();
-        }catch (SQLException e){
-            e.printStackTrace();
-        }
-    }
-    */
-
     @Override
     public void deleteById(int id) {
         String deleteByIdSql = "DELETE FROM vehicle WHERE id = ?";
