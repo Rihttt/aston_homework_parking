@@ -8,5 +8,5 @@ public interface SimpleDao<T> {
     List<T> findAll();
     Optional<T> findById(int id);
     void deleteById(int id);
-
 }
+

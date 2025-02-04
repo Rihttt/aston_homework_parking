@@ -1,12 +1,14 @@
 package ru.aston;
-
-import org.h2.tools.Server;
 import ru.aston.dao.SimpleDao;
 import ru.aston.dao.VehicleDao;
-import ru.aston.db.H2DBInitializer;
+import ru.aston.dao.ParkingSpotDao;
+
 import ru.aston.model.ParkingObject;
 import ru.aston.model.Vehicle;
+import ru.aston.model.ParkingSpot;
 
+import org.h2.tools.Server;
+import ru.aston.db.H2DBInitializer;
 import java.sql.SQLException;
 
 import java.util.List;
@@ -19,7 +21,8 @@ public class ParkingApp {
 
         H2DBInitializer initializer = new H2DBInitializer();
         initializer.initialize();
-
+        
+        ParkingSpotDao parkingSpotDao =  new ParkingSpotDao();
         VehicleDao vehicleDao = new VehicleDao();
 
         Server h2WebServer = org.h2.tools.Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082");
@@ -48,7 +51,7 @@ public class ParkingApp {
                 }
 
                 case 3:{
-
+                    displaySubMenu(parkingSpotDao);
                     break;
                 }
 
@@ -113,7 +116,7 @@ public class ParkingApp {
         switch (daoName){
             case "1":{break;}
             case "2":{break;}
-            case "3":{break;}
+            case "ParkingSpotDao":{addNewParkingSpot((ParkingSpotDao) dao);break;}
             case "VehicleDao":{addNewVehicle((VehicleDao) dao);break;}
         }
     }
@@ -135,7 +138,20 @@ public class ParkingApp {
         dao.save(record);
         System.out.println("Vehicle added successfully!");
     }
+     
+    private static void addNewParkingSpot(ParkingSpotDao dao) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Enter spot number: ");
+        int spotNumber = scanner.nextInt();
 
+        ParkingSpot spot = new ParkingSpot();
+        spot.setSpotNumber(spotNumber);
+        spot.setAvailable(true);
+
+        dao.save(spot);
+        System.out.println("Parking spot added successfully!");
+    }
+    
     private static <T extends ParkingObject> void listRecords(SimpleDao<T> dao) {
         List<T> records = dao.findAll();
         if (records.isEmpty()) {
