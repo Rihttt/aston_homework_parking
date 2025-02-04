@@ -3,6 +3,7 @@ import ru.aston.dao.SimpleDao;
 import ru.aston.dao.VehicleDao;
 import ru.aston.dao.ParkingSpotDao;
 
+import ru.aston.db.DBInitializer;
 import ru.aston.model.ParkingObject;
 import ru.aston.model.Vehicle;
 import ru.aston.model.ParkingSpot;
@@ -19,7 +20,7 @@ public class ParkingApp {
 
     public static void main (String[] args) throws SQLException {
 
-        H2DBInitializer initializer = new H2DBInitializer();
+        DBInitializer initializer = new H2DBInitializer();
         initializer.initialize();
         
         ParkingSpotDao parkingSpotDao =  new ParkingSpotDao();
@@ -154,8 +155,10 @@ public class ParkingApp {
     
     private static <T extends ParkingObject> void listRecords(SimpleDao<T> dao) {
         List<T> records = dao.findAll();
+        String objName = getObjectName(dao.getClass());
+
         if (records.isEmpty()) {
-            System.out.println("No record found.");
+            System.out.println("No "+ objName +"s found.");
         } else {
             records.stream().map(T::toString).forEach(System.out::println);
         }
@@ -163,7 +166,9 @@ public class ParkingApp {
 
     private static <T> void findRecordById(SimpleDao<T> dao) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter id: ");
+        String objName = getObjectName(dao.getClass());
+        System.out.print("Enter "+objName+" id: ");
+
         int recordId = scanner.nextInt();
         Optional<T> optRecord = dao.findById(recordId);
 
@@ -175,8 +180,15 @@ public class ParkingApp {
 
     private static <T> void deleteRecordById(SimpleDao<T> dao) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter id: ");
+        String objName = getObjectName(dao.getClass());
+        System.out.print("Enter "+objName+" id: ");
+
         int recordId = scanner.nextInt();
         dao.deleteById(recordId);
+    }
+
+    private static String getObjectName(Class<?> cls) {
+        String className = cls.getSimpleName();
+        return className.substring(0,className.length()-3);
     }
 }
