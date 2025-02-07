@@ -3,7 +3,10 @@ package ru.aston.dao;
 import ru.aston.db.DBConnection;
 import ru.aston.model.Ticket;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +22,31 @@ public class TicketDao implements SimpleDao<Ticket> {
     public TicketDao() {
         try {
             connection = DBConnection.getInstance().getConnection();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static Ticket getTicket(ResultSet resultSet) throws SQLException {
+        Ticket ticket = new Ticket();
+
+        ticket.setId(resultSet.getInt("id"));
+        ticket.setUserId(resultSet.getInt("user_id"));
+        ticket.setCarId(resultSet.getInt("car_id"));
+        ticket.setParkSpotId(resultSet.getInt("park_spot_id"));
+        ticket.setParkingTimeInHours(resultSet.getInt("parking_time_in_hours"));
+        ticket.setStartOfParking(resultSet.getTimestamp("start_of_parking"));
+        ticket.setEndOfParking(resultSet.getTimestamp("end_of_parking"));
+        return ticket;
+    }
+
+    @Override
+    public void deleteById(int id) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_TICKET)) {
+
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -49,15 +77,8 @@ public class TicketDao implements SimpleDao<Ticket> {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                int userId = resultSet.getInt("user_id");
-                int carId = resultSet.getInt("car_id");
-                int parkSpotId = resultSet.getInt("park_spot_id");
-                int parkingTimeInHours = resultSet.getInt("parking_time_in_hours");
-                Timestamp startOfParking = resultSet.getTimestamp("start_of_parking");
-                Timestamp endOfParking = resultSet.getTimestamp("end_of_parking");
-
-                tickets.add(new Ticket(id, userId, carId, parkSpotId, parkingTimeInHours, startOfParking, endOfParking));
+                Ticket ticket = getTicket(resultSet);
+                tickets.add(ticket);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -71,35 +92,13 @@ public class TicketDao implements SimpleDao<Ticket> {
             ps.setInt(1, id);
             try (ResultSet resultSet = ps.executeQuery()) {
                 if (resultSet.next()) {
-                    Ticket ticket = new Ticket();
-
-                    ticket.setId(resultSet.getInt("id"));
-                    ticket.setUserId(resultSet.getInt("user_id"));
-                    ticket.setCarId(resultSet.getInt("car_id"));
-                    ticket.setParkSpotId(resultSet.getInt("park_spot_id"));
-                    ticket.setParkingTimeInHours(resultSet.getInt("parking_time_in_hours"));
-                    ticket.setStartOfParking(resultSet.getTimestamp("start_of_parking"));
-                    ticket.setEndOfParking(resultSet.getTimestamp("end_of_parking"));
-
+                    Ticket ticket = getTicket(resultSet);
                     return Optional.of(ticket);
                 }
             }
         } catch (SQLException e) {
-            System.out.println("Failed to query ParkingSpot by Id: " + e.getMessage());
+            System.out.println("Failed to query Ticket by Id: " + e.getMessage());
         }
-
         return Optional.empty();
-    }
-
-    @Override
-    public void deleteById(int id) {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_TICKET)) {
-
-            preparedStatement.setInt(1, id);
-            preparedStatement.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
     }
 }

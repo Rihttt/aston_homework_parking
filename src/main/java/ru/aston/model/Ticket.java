@@ -14,16 +14,6 @@ public class Ticket implements ParkingObject {
     public Ticket() {
     }
 
-    public Ticket(int id, int userId, int carId, int parkSpotId, int parkingTimeInHours, Timestamp startOfParking, Timestamp endOfParking) {
-        this.id = id;
-        this.userId = userId;
-        this.carId = carId;
-        this.parkSpotId = parkSpotId;
-        this.parkingTimeInHours = parkingTimeInHours;
-        this.startOfParking = startOfParking;
-        this.endOfParking = endOfParking;
-    }
-
     @Override
     public String toString() {
         return "\n" + "Ticket{" +
