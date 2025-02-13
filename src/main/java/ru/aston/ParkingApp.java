@@ -1,14 +1,8 @@
 package ru.aston;
 
-import ru.aston.dao.SimpleDao;
-import ru.aston.dao.TicketDao;
-import ru.aston.dao.VehicleDao;
-import ru.aston.dao.ParkingSpotDao;
+import ru.aston.dao.*;
 import ru.aston.db.DBInitializer;
-import ru.aston.model.ParkingObject;
-import ru.aston.model.Ticket;
-import ru.aston.model.Vehicle;
-import ru.aston.model.ParkingSpot;
+import ru.aston.model.*;
 import org.h2.tools.Server;
 import ru.aston.db.H2DBInitializer;
 import java.sql.SQLException;
@@ -26,6 +20,7 @@ public class ParkingApp {
         ParkingSpotDao parkingSpotDao =  new ParkingSpotDao();
         VehicleDao vehicleDao = new VehicleDao();
         TicketDao ticketDao = new TicketDao();
+        UserDao userDao = new UserDao();
 
         Server h2WebServer = org.h2.tools.Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082");
         h2WebServer.start();
@@ -43,7 +38,7 @@ public class ParkingApp {
 
             switch (k){
                 case 1:{
-
+                    displaySubMenu(userDao);
                     break;
                 }
 
@@ -116,11 +111,28 @@ public class ParkingApp {
         String daoName = dao.getClass().getSimpleName();
 
         switch (daoName){
-            case "1":{break;}
+            case "UserDao":{addNewUser((UserDao) dao); break;}
             case "TicketDao": {addNewTicket((TicketDao) dao);break;}
             case "ParkingSpotDao":{addNewParkingSpot((ParkingSpotDao) dao);break;}
             case "VehicleDao":{addNewVehicle((VehicleDao) dao);break;}
         }
+    }
+
+    private static void addNewUser(UserDao dao) {
+        Scanner scanner = new Scanner(System.in);
+        User user = new User();
+
+        System.out.println("Enter first name: ");
+        user.setFirstName(scanner.next());
+
+        System.out.println("Enter last name: ");
+        user.setLastName(scanner.next());
+
+        System.out.println("Enter email: ");
+        user.setEmail(scanner.next());
+
+        dao.save(user);
+        System.out.println("User was added successfully!");
     }
 
     private static void addNewTicket(TicketDao dao) {
@@ -141,7 +153,7 @@ public class ParkingApp {
         record.setParkingTimeInHours(parkingTimeInHours);
 
         dao.save(record);
-        System.out.println("Ticket added successfully!");
+        System.out.println("Ticket was added successfully!");
     }
 
     private static void addNewVehicle(VehicleDao dao) {
@@ -159,7 +171,7 @@ public class ParkingApp {
         record.setRelease_year(year);
 
         dao.save(record);
-        System.out.println("Vehicle added successfully!");
+        System.out.println("Vehicle was added successfully!");
     }
 
     private static void addNewParkingSpot(ParkingSpotDao dao) {
@@ -172,7 +184,7 @@ public class ParkingApp {
         spot.setAvailable(true);
 
         dao.save(spot);
-        System.out.println("Parking spot added successfully!");
+        System.out.println("Parking spot was added successfully!");
     }
 
     private static <T extends ParkingObject> void listRecords(SimpleDao<T> dao) {
@@ -207,6 +219,8 @@ public class ParkingApp {
 
         int recordId = scanner.nextInt();
         dao.deleteById(recordId);
+
+        System.out.print(objName+" record was successfully deleted");
     }
 
     private static String getObjectName(Class<?> cls) {
