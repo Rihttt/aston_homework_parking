@@ -1,16 +1,11 @@
 package ru.aston;
-import ru.aston.dao.SimpleDao;
-import ru.aston.dao.VehicleDao;
-import ru.aston.dao.ParkingSpotDao;
 
-import ru.aston.model.ParkingObject;
-import ru.aston.model.Vehicle;
-import ru.aston.model.ParkingSpot;
-
+import ru.aston.dao.*;
+import ru.aston.db.DBInitializer;
+import ru.aston.model.*;
 import org.h2.tools.Server;
 import ru.aston.db.H2DBInitializer;
 import java.sql.SQLException;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
@@ -19,11 +14,13 @@ public class ParkingApp {
 
     public static void main (String[] args) throws SQLException {
 
-        H2DBInitializer initializer = new H2DBInitializer();
+        DBInitializer initializer = new H2DBInitializer();
         initializer.initialize();
-        
+
         ParkingSpotDao parkingSpotDao =  new ParkingSpotDao();
         VehicleDao vehicleDao = new VehicleDao();
+        TicketDao ticketDao = new TicketDao();
+        UserDao userDao = new UserDao();
 
         Server h2WebServer = org.h2.tools.Server.createWebServer("-web", "-webAllowOthers", "-webPort", "8082");
         h2WebServer.start();
@@ -41,12 +38,12 @@ public class ParkingApp {
 
             switch (k){
                 case 1:{
-
+                    displaySubMenu(userDao);
                     break;
                 }
 
                 case 2:{
-
+                    displaySubMenu(ticketDao);
                     break;
                 }
 
@@ -114,11 +111,49 @@ public class ParkingApp {
         String daoName = dao.getClass().getSimpleName();
 
         switch (daoName){
-            case "1":{break;}
-            case "2":{break;}
+            case "UserDao":{addNewUser((UserDao) dao); break;}
+            case "TicketDao": {addNewTicket((TicketDao) dao);break;}
             case "ParkingSpotDao":{addNewParkingSpot((ParkingSpotDao) dao);break;}
             case "VehicleDao":{addNewVehicle((VehicleDao) dao);break;}
         }
+    }
+
+    private static void addNewUser(UserDao dao) {
+        Scanner scanner = new Scanner(System.in);
+        User user = new User();
+
+        System.out.println("Enter first name: ");
+        user.setFirstName(scanner.next());
+
+        System.out.println("Enter last name: ");
+        user.setLastName(scanner.next());
+
+        System.out.println("Enter email: ");
+        user.setEmail(scanner.next());
+
+        dao.save(user);
+        System.out.println("User was added successfully!");
+    }
+
+    private static void addNewTicket(TicketDao dao) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("userID: ");
+        int userId = scanner.nextInt();
+        System.out.println("carID: ");
+        int carId = scanner.nextInt();
+        System.out.println("parkSpotId: ");
+        int parkSpotId = scanner.nextInt();
+        System.out.println("Часов парковки: ");
+        int parkingTimeInHours = scanner.nextInt();
+
+        Ticket record = new Ticket();
+        record.setUserId(userId);
+        record.setCarId(carId);
+        record.setParkSpotId(parkSpotId);
+        record.setParkingTimeInHours(parkingTimeInHours);
+
+        dao.save(record);
+        System.out.println("Ticket was added successfully!");
     }
 
     private static void addNewVehicle(VehicleDao dao) {
@@ -136,9 +171,9 @@ public class ParkingApp {
         record.setRelease_year(year);
 
         dao.save(record);
-        System.out.println("Vehicle added successfully!");
+        System.out.println("Vehicle was added successfully!");
     }
-     
+
     private static void addNewParkingSpot(ParkingSpotDao dao) {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter spot number: ");
@@ -149,13 +184,15 @@ public class ParkingApp {
         spot.setAvailable(true);
 
         dao.save(spot);
-        System.out.println("Parking spot added successfully!");
+        System.out.println("Parking spot was added successfully!");
     }
-    
+
     private static <T extends ParkingObject> void listRecords(SimpleDao<T> dao) {
         List<T> records = dao.findAll();
+        String objName = getObjectName(dao.getClass());
+
         if (records.isEmpty()) {
-            System.out.println("No record found.");
+            System.out.println("No "+ objName +"s found.");
         } else {
             records.stream().map(T::toString).forEach(System.out::println);
         }
@@ -163,7 +200,9 @@ public class ParkingApp {
 
     private static <T> void findRecordById(SimpleDao<T> dao) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter id: ");
+        String objName = getObjectName(dao.getClass());
+        System.out.print("Enter "+objName+" id: ");
+
         int recordId = scanner.nextInt();
         Optional<T> optRecord = dao.findById(recordId);
 
@@ -175,8 +214,17 @@ public class ParkingApp {
 
     private static <T> void deleteRecordById(SimpleDao<T> dao) {
         Scanner scanner = new Scanner(System.in);
-        System.out.print("Enter id: ");
+        String objName = getObjectName(dao.getClass());
+        System.out.print("Enter "+objName+" id: ");
+
         int recordId = scanner.nextInt();
         dao.deleteById(recordId);
+
+        System.out.print(objName+" record was successfully deleted");
+    }
+
+    private static String getObjectName(Class<?> cls) {
+        String className = cls.getSimpleName();
+        return className.substring(0,className.length()-3);
     }
 }
